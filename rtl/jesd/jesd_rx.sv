@@ -2,7 +2,7 @@
 //
 // Per lane: comma alignment -> 8b/10b decode -> code group sync FSM
 // (4 good /K/ to synchronise, 4 consecutive bad characters to drop) ->
-// elastic buffer that starts filling at the first /R/ of the ILAS.
+// elastic buffer that starts filling at the /R/ opening the ILAS.
 // Lane alignment: all buffers are released in the same cycle once every
 // lane has started, which removes lane-to-lane skew. The aligned stream is
 // checked against the ILAS structure and configuration, then control
@@ -89,8 +89,11 @@ module jesd_rx #(
       end
     end
 
-    // elastic buffer: starts at the first non-/K/ character after sync
-    assign wr = link_up && (started[ln] || !(kk[ln] && oct[ln] == K_K));
+    // elastic buffer: starts at the /R/ that opens the ILAS. Keying on /R/
+    // rather than on "first non-/K/" matters after a re-sync: a lane with a
+    // long channel delay can still deliver stale data characters from the
+    // previous link when SYNC~ is released.
+    assign wr = link_up && (started[ln] || (kk[ln] && oct[ln] == K_R && !ce[ln] && !de[ln]));
 
     always_ff @(posedge clk or negedge rst_n) begin
       if (!rst_n) begin
