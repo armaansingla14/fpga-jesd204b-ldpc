@@ -1,0 +1,16 @@
+build/
+obj_dir/
+*.vcd
+*.fst
+*.vvp
+core
+core.*
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+*.jou
+*.log
+.Xil/
+vivado_runs/
