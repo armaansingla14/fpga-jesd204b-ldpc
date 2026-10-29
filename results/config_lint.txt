@@ -1,0 +1,1 @@
+72 build configurations generated; 24 distinct RTL parameter sets (lanes x decoder cores x scrambling) elaborated with Verilator --lint-only.
